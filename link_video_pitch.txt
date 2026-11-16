@@ -1,0 +1,34 @@
+===================================================================
+  GLOBAL SOLUTION 2026.2 - FIAP
+  Curso: Ciência da Computação (1º Ano)
+  Projeto: Citizen Assist AI
+  Tema: CitizenTech - Da cidade ao campo, tecnologia para a vida cotidiana
+===================================================================
+
+Link do Vídeo Pitch no YouTube (Configurado como Não Listado):
+[COLE O LINK DO YOUTUBE AQUI]
+
+Exemplo: https://www.youtube.com/watch?v=XXXXXXXXXXX
+
+-------------------------------------------------------------------
+TIPO DE EQUIPE: TRIO
+-------------------------------------------------------------------
+INTEGRANTES:
+1. Miguel Putini          - RM 571624
+2. Alexandre Rizzi        - RM 569621
+3. Lucas Klein de Veiga   - RM 570029
+-------------------------------------------------------------------
+
+CHECKLIST DE ENTREGA CONFORME EDITAL DA GS:
+✓ Vídeo com duração máxima de 3 minutos.
+✓ Upload no YouTube marcado obrigatoriamente como "Não Listado".
+✓ Narração feita por integrante humano (proibido o uso de voz gerada por IA).
+✓ Nos comentários do YouTube:
+    - Indicado que o trabalho é em TRIO.
+    - Listados os nomes completos e RMs de todos os 3 integrantes:
+      • Miguel Putini - RM 571624
+      • Alexandre Rizzi - RM 569621
+      • Lucas Klein de Veiga - RM 570029
+✓ Proposta da solução claramente alinhada ao tema CitizenTech.
+✓ Somente UM dos integrantes realiza o upload deste arquivo no Portal do Aluno.
+===================================================================

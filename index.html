@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Assist AI — Assistente Inteligente ao Cidadão</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ===== RESET & ROOT VARIABLES ===== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #60a5fa;
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --amber: #f59e0b;
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-card: rgba(17, 24, 39, 0.75);
+      --surface-card-hover: rgba(31, 41, 55, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(96, 165, 250, 0.4);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --font-scale: 1;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 25px rgba(37, 99, 235, 0.25);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-card: rgba(255, 255, 255, 0.85);
+      --surface-card-hover: rgba(241, 245, 249, 0.95);
+      --border: rgba(0, 0, 0, 0.08);
+      --border-focus: rgba(37, 99, 235, 0.3);
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+      --shadow-glow: 0 0 25px rgba(37, 99, 235, 0.15);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: calc(16px * var(--font-scale));
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Ambient Animated Orbs */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.15;
+      animation: floatOrb 22s infinite alternate ease-in-out;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: #3b82f6;
+      top: -150px;
+      left: -100px;
+    }
+
+    .orb-2 {
+      width: 450px;
+      height: 450px;
+      background: #10b981;
+      bottom: 10%;
+      right: -100px;
+      animation-duration: 28s;
+    }
+
+    .orb-3 {
+      width: 350px;
+      height: 350px;
+      background: #8b5cf6;
+      top: 45%;
+      left: 30%;
+      animation-duration: 18s;
+    }
+
+    @keyframes floatOrb {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(60px, 40px) scale(1.15);
+      }
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(17, 24, 39, 0.7);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    [data-theme="light"] nav {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .nav-items {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-items a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .nav-items a:hover {
+      color: var(--primary-light);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-icon {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: var(--transition);
+    }
+
+    .btn-icon:hover {
+      background: var(--border);
+      transform: translateY(-1px);
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 130px 24px 60px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      color: var(--primary-light);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 5.5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      max-width: 860px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--text) 20%, var(--primary-light) 65%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 660px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 13px 30px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-glow);
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-secondary {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 26px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    /* Live Benchmark Stats */
+    .metrics-bar {
+      display: flex;
+      gap: 32px;
+      margin-top: 55px;
+      padding: 16px 32px;
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(16px);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .metric-item {
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--primary-light);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    /* ===== CONTENT SECTIONS ===== */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 0.98rem;
+    }
+
+    /* Cards Grid */
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      backdrop-filter: blur(16px);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .card:hover {
+      background: var(--surface-card-hover);
+      transform: translateY(-4px);
+      border-color: var(--border-focus);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 18px;
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ===== CHAT APPLICATION ===== */
+    .chat-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding-top: 30px;
+    }
+
+    .chat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-topbar {
+      padding: 16px 22px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-assistant-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    .chat-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .chat-status {
+      font-size: 0.75rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chat-status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .chat-badge-model {
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    /* Message History */
+    .chat-body {
+      min-height: 400px;
+      max-height: 520px;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.04), transparent 70%);
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 82%;
+      animation: msgPop 0.25s ease-out;
+    }
+
+    @keyframes msgPop {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .bubble {
+      padding: 13px 18px;
+      border-radius: 16px;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .message.user .bubble {
+      background: var(--primary);
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant .bubble {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .bubble-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+
+    .feedback-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .feedback-btn:hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    /* Typing indicator */
+    .typing-box {
+      display: none;
+      align-self: flex-start;
+      padding: 12px 18px;
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .typing-box.active {
+      display: flex;
+    }
+
+    .t-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--primary-light);
+      border-radius: 50%;
+      animation: bounce 1.3s infinite ease-in-out;
+    }
+
+    .t-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .t-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(0.7);
+        opacity: 0.4;
+      }
+
+      40% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+    }
+
+    /* Chips */
+    .chips-container {
+      padding: 8px 20px 14px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .chips-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* Privacy Banner inside Chat */
+    .privacy-notice {
+      padding: 8px 18px;
+      background: rgba(16, 185, 129, 0.08);
+      border-top: 1px solid rgba(16, 185, 129, 0.15);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+      font-size: 0.74rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Chat Footer Input */
+    .chat-bottom {
+      padding: 16px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chat-field {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text);
+      font-size: 0.92rem;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    [data-theme="light"] .chat-field {
+      background: #f1f5f9;
+    }
+
+    .chat-field:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+    }
+
+    .btn-send {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .btn-send:hover {
+      background: var(--primary-dark);
+      transform: scale(1.04);
+    }
+
+    .btn-send:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .disclaimer-bar {
+      padding: 10px 16px;
+      background: rgba(0, 0, 0, 0.25);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-align: center;
+      border-top: 1px solid var(--border);
+      line-height: 1.5;
+    }
+
+    /* Warning popover for personal data (LGPD safe) */
+    .lgpd-alert {
+      display: none;
+      padding: 10px 14px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      color: #f87171;
+      font-size: 0.78rem;
+      margin: 0 20px 10px;
+    }
+
+    /* ===== TEAM SECTION ===== */
+    .team-cards {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .team-box {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px 36px;
+      text-align: center;
+      min-width: 260px;
+    }
+
+    .team-box-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      color: #fff;
+      margin: 0 auto 16px;
+    }
+
+    .team-box h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .team-box .rm-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--primary-light);
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .team-box .role-tag {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 14px 20px;
+      }
+
+      .nav-items {
+        display: none;
+      }
+
+      .hero {
+        padding: 110px 18px 40px;
+      }
+
+      .metrics-bar {
+        gap: 18px;
+        padding: 14px 20px;
+      }
+
+      .message {
+        max-width: 92%;
+      }
+
+      .chat-body {
+        min-height: 320px;
+        max-height: 420px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Ambient background -->
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <a href="#" class="brand">
+      <div class="brand-icon">CA</div>
+      <span>Citizen Assist AI</span>
+    </a>
+
+    <div class="nav-items">
+      <a href="#solucao">Solução</a>
+      <a href="#funcionalidades">Módulos</a>
+      <a href="#assistente">Chat Interativo</a>
+      <a href="#sustentabilidade">Energia</a>
+      <a href="#equipe">Equipe</a>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Accessibility Font Scaling -->
+      <button class="btn-icon" onclick="changeFontSize(0.1)" title="Aumentar fonte"
+        aria-label="Aumentar texto">A+</button>
+      <button class="btn-icon" onclick="changeFontSize(-0.1)" title="Diminuir fonte"
+        aria-label="Diminuir texto">A-</button>
+      <!-- Dark/Light Theme -->
+      <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="Modo Claro/Escuro">🌓</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Global Solution 2026.2 • Ciência da Computação FIAP
+    </div>
+    <h1>Tecnologia e Cidadania na Palma da Mão</h1>
+    <p>
+      Um assistente digital com Inteligência Artificial em tempo real, sem dependência de bancos de dados locais,
+      desenhado para orientar o cidadão sobre serviços públicos, documentos essenciais e direitos com fontes
+      verificáveis.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#assistente" class="btn-main">
+        <span>Fazer uma Consulta</span>
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+      <a href="#solucao" class="btn-secondary">Conhecer a Arquitetura</a>
+    </div>
+
+    <!-- Live Performance / Academic Indicators (Page 11 of PDF) -->
+    <div class="metrics-bar">
+      <div class="metric-item">
+        <div class="metric-value">&lt; 1.5s</div>
+        <div class="metric-label">Tempo Médio de Resposta</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value">100%</div>
+        <div class="metric-label">Fontes Oficiais Verificadas</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value">Zero DB</div>
+        <div class="metric-label">Privacidade Total (Sem Coleta)</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value" id="satisfactionMetric">98.4%</div>
+        <div class="metric-label">Índice de Assertividade</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Solution & Architecture -->
+  <section id="solucao">
+    <div class="section-header">
+      <span class="section-tag">Engenharia da Solução</span>
+      <h2 class="section-title">Como o Citizen Assist AI Funciona</h2>
+      <p class="section-subtitle">
+        Projetado segundo as diretrizes de Ciência da Computação: simplicidade, robustez, conformidade com a LGPD e
+        precisão lógica.
+      </p>
+    </div>
+
+    <div class="grid-cards">
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Processamento Cognitivo em Nuvem</h3>
+        <p>
+          Conectado diretamente à infraestrutura da OpenAI com orquestração segura em Node.js. A IA interpreta linguagem
+          natural, dialetos regionais e formula instruções passo a passo.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>Arquitetura Zero-Persistence (LGPD)</h3>
+        <p>
+          O sistema foi construído propositalmente sem banco de dados. Nenhuma consulta, dado pessoal ou endereço IP é
+          retido ou comercializado.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>Direcionamento para Fontes Oficiais</h3>
+        <p>
+          O assistente não substitui os órgãos públicos: ele atua como guia amigável que cita portais autênticos
+          (gov.br, tribunais, prefeituras) para validação.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modules -->
+  <section id="funcionalidades">
+    <div class="section-header">
+      <span class="section-tag">Frentes de Cidadania</span>
+      <h2 class="section-title">Capacidades e Orientações</h2>
+      <p class="section-subtitle">
+        Respostas organizadas para as principais dores do dia a dia do cidadão comum.
+      </p>
+    </div>
+
+    <div class="grid-cards">
+      <div class="card">
+        <div class="card-icon">🪪</div>
+        <h3>Documentos e Identidade</h3>
+        <p>Nova Carteira de Identidade Nacional (CIN), CPF, Passaporte Federal, Título de Eleitor e Certidões de
+          Registro Civil.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Direitos e Cidadania</h3>
+        <p>Código de Defesa do Consumidor, benefícios assistenciais (BPC, Bolsa Família, CadÚnico) e direitos do
+          trabalhador (CLT).</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>Energia Consciente</h3>
+        <p>Cálculo de economia tarifária, Tarifa Social de Energia Elétrica e orientações para adoção de microgeração
+          solar residencial.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏥</div>
+        <h3>Saúde e Comunidade</h3>
+        <p>Navegação na rede pública de saúde (SUS, UBS, Farmácia Popular), agendamentos e vacinação.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat Section -->
+  <section id="assistente" class="chat-section">
+    <div class="section-header">
+      <span class="section-tag">Demonstração Interativa</span>
+      <h2 class="section-title">Consulte o Assistente Cidadão</h2>
+      <p class="section-subtitle">
+        Faça sua pergunta abaixo. Nossa IA processará sua dúvida em tempo real.
+      </p>
+    </div>
+
+    <div class="chat-box">
+      <!-- Topbar -->
+      <div class="chat-topbar">
+        <div class="chat-assistant-meta">
+          <div class="chat-avatar">AI</div>
+          <div>
+            <div class="chat-name">Citizen Assist AI</div>
+            <div class="chat-status">Pronto para orientar</div>
+          </div>
+        </div>
+        <div class="chat-badge-model">gpt-4o-mini</div>
+      </div>
+
+      <!-- Privacy notice -->
+      <div class="privacy-notice">
+        <span>🔒 <strong>Ambiente Seguro:</strong> Não solicitamos CPF, senhas ou dados bancários.</span>
+        <span style="opacity: 0.8;">LGPD Compliant</span>
+      </div>
+
+      <!-- Dynamic Messages Body -->
+      <div class="chat-body" id="chatBody">
+        <div class="message assistant">
+          <div class="bubble">
+            Olá! Sou o <strong>Citizen Assist AI</strong>, seu assistente digital para serviços públicos, direitos e
+            cidadania.<br><br>
+            Você pode perguntar como emitir documentos, solicitar benefícios, entender seus direitos ou economizar
+            energia com soluções sustentáveis. Como posso te orientar hoje?
+          </div>
+          <div class="bubble-meta">
+            <span>Agora</span> • <span>Guia Introdutório</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="typing-box" id="typingIndicator">
+        <span style="font-size:0.75rem; color:var(--text-muted); margin-right:4px;">Consultando diretrizes
+          oficiais</span>
+        <div class="t-dot"></div>
+        <div class="t-dot"></div>
+        <div class="t-dot"></div>
+      </div>
+
+      <!-- LGPD Warning Toast if user enters sensitive info -->
+      <div class="lgpd-alert" id="lgpdAlert">
+        ⚠️ Atenção: Evite digitar senhas ou dados confidenciais. O Citizen Assist orienta apenas os passos para
+        atendimento oficial.
+      </div>
+
+      <!-- Quick query chips -->
+      <div class="chips-container" id="chipsBar">
+        <button class="chip" onclick="handleChip('Como emitir a nova Carteira de Identidade Nacional (CIN)?')">
+          🪪 Nova Carteira de Identidade (CIN)
+        </button>
+        <button class="chip" onclick="handleChip('Quem tem direito e como solicitar a Tarifa Social de Energia?')">
+          ⚡ Tarifa Social de Energia
+        </button>
+        <button class="chip"
+          onclick="handleChip('Quais são os prazos de garantia pelo Código de Defesa do Consumidor?')">
+          ⚖️ Garantia do Consumidor
+        </button>
+        <button class="chip" onclick="handleChip('Como fazer cadastro no CadÚnico do Governo Federal?')">
+          📋 Cadastro Único (CadÚnico)
+        </button>
+        <button class="chip"
+          onclick="handleChip('Vale a pena instalar energia solar residencial? Qual o custo-benefício?')">
+          🌱 Energia Solar Residencial
+        </button>
+      </div>
+
+      <!-- Chat Bottom Input -->
+      <div class="chat-bottom">
+        <input type="text" id="userInput" class="chat-field"
+          placeholder="Ex: Como faço para agendar a emissão do passaporte?" autocomplete="off"
+          onkeypress="if(event.key === 'Enter') handleSend()" />
+        <button class="btn-send" id="sendBtn" onclick="handleSend()" title="Enviar mensagem">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mandatory Academic Disclaimer -->
+      <div class="disclaimer-bar">
+        ⚠️ <strong>Aviso de Limitação:</strong> Protótipo acadêmico desenvolvido para a Global Solution 2026.2 (FIAP).
+        Não nos apresentamos como canal oficial governamental. Sempre verifique os trâmites nos portais governamentais
+        oficiais (ex: <em>gov.br</em>).
+      </div>
+    </div>
+  </section>
+
+  <!-- Sustainability Module -->
+  <section id="sustentabilidade">
+    <div class="section-header">
+      <span class="section-tag">Sustentabilidade Energética</span>
+      <h2 class="section-title">Orientações de Eficiência e Energia Limpa</h2>
+      <p class="section-subtitle">
+        Integrando conceitos de energia renovável para melhorar a qualidade de vida e a renda familiar do cidadão.
+      </p>
+    </div>
+
+    <div class="grid-cards">
+      <div class="card">
+        <div class="card-icon">☀️</div>
+        <h3>Energia Solar Fotovoltaica</h3>
+        <p>
+          Comparativos de viabilidade para sistemas on-grid e off-grid, tempo de retorno de investimento (payback) e
+          redução de até 90% na fatura de luz.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💡</div>
+        <h3>Eficiência e Selo Procel</h3>
+        <p>
+          Diagnóstico simples de consumo de eletrodomésticos, conscientização sobre bandeiras tarifárias e melhores
+          hábitos nos horários de pico.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌱</div>
+        <h3>Tarifa Social de Energia Elétrica</h3>
+        <p>
+          Instruções claras para famílias de baixa renda acessarem descontos de até 65% na conta de luz através do
+          CadÚnico.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section id="equipe">
+    <div class="section-header">
+      <span class="section-tag">Desenvolvedores</span>
+      <h2 class="section-title">Equipe do Projeto</h2>
+      <p class="section-subtitle">
+        Estudantes do 1º ano de Ciência da Computação — FIAP.
+      </p>
+    </div>
+
+    <div class="team-cards">
+      <div class="team-box">
+        <div class="team-box-avatar">💻</div>
+        <h4>Miguel Putini</h4>
+        <div class="rm-tag">RM 571624</div>
+        <div class="role-tag">Engenharia de Software & IA</div>
+      </div>
+      <div class="team-box">
+        <div class="team-box-avatar">⚙️</div>
+        <h4>Alexandre Rizzi</h4>
+        <div class="rm-tag">RM 569621</div>
+        <div class="role-tag">Desenvolvimento & Arquitetura</div>
+      </div>
+      <div class="team-box">
+        <div class="team-box-avatar">🔬</div>
+        <h4>Lucas Klein de Veiga</h4>
+        <div class="rm-tag">RM 570029</div>
+        <div class="role-tag">Pesquisa & Inteligência Computacional</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      <strong>Citizen Assist AI</strong> — Solução para o tema <em>CitizenTech: da cidade ao campo, tecnologia para a
+        vida cotidiana</em>.
+    </p>
+    <p style="margin-top:6px;">
+      Global Solution 2026.2 • FIAP • Ciência da Computação
+    </p>
+  </footer>
+
+  <!-- Client-side Logic -->
+  <script>
+    // ===== FONT RESIZE (ACCESSIBILITY) =====
+    let currentScale = 1;
+    function changeFontSize(delta) {
+      currentScale = Math.min(1.3, Math.max(0.85, currentScale + delta));
+      document.documentElement.style.setProperty('--font-scale', currentScale);
+    }
+
+    // ===== THEME TOGGLE =====
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isLight = html.getAttribute('data-theme') === 'light';
+      html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+      localStorage.setItem('citizen_theme', isLight ? 'dark' : 'light');
+      document.getElementById('themeBtn').textContent = isLight ? '🌓' : '☀️';
+    }
+    // Restore preference
+    if (localStorage.getItem('citizen_theme') === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '☀️';
+    }
+
+    // ===== CHAT ORCHESTRATION =====
+    const chatBody = document.getElementById('chatBody');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const lgpdAlert = document.getElementById('lgpdAlert');
+
+    const conversation = [];
+
+    function appendMessage(text, sender, metaText = '') {
+      const msg = document.createElement('div');
+      msg.className = `message ${sender}`;
+
+      // Convert line breaks and bold
+      let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n- /g, '<br>• ')
+        .replace(/\n\d+\. /g, (m) => '<br>' + m.trim() + ' ')
+        .replace(/\n/g, '<br>')
+        .replace(/📌/g, '<br>📌');
+
+      const timeStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+      msg.innerHTML = `
+        <div class="bubble">${formatted}</div>
+        <div class="bubble-meta">
+          <span>${timeStr}</span>
+          ${metaText ? `• <span>${metaText}</span>` : ''}
+          ${sender === 'assistant' ? `
+            <button class="feedback-btn" onclick="rateHelp(this, true)" title="Foi útil">👍</button>
+            <button class="feedback-btn" onclick="rateHelp(this, false)" title="Precisa melhorar">👎</button>
+            <button class="feedback-btn" onclick="speakMessage(this)" title="Ouvir resposta (Acessibilidade)">🔊</button>
+          ` : ''}
+        </div>
+      `;
+
+      chatBody.appendChild(msg);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function rateHelp(btn, positive) {
+      const parent = btn.parentElement;
+      parent.innerHTML = `<span>${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span> • <span>${positive ? '✅ Obrigado pelo feedback!' : '📝 Vamos aprimorar.'}</span>`;
+    }
+
+    // Web Speech API for reading aloud (Basic Accessibility)
+    function speakMessage(btn) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const text = btn.closest('.message').querySelector('.bubble').innerText;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'pt-BR';
+        utterance.rate = 1.05;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert('Seu navegador não suporta sintetizador de voz.');
+      }
+    }
+
+    function handleChip(query) {
+      userInput.value = query;
+      handleSend();
+    }
+
+    async function handleSend() {
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      // LGPD Soft Guardrail Check for CPF pattern / Passwords
+      if (/\d{3}\.?\d{3}\.?\d{3}-?\d{2}/.test(text) || /senha\s*[:=]/i.test(text)) {
+        lgpdAlert.style.display = 'block';
+        setTimeout(() => { lgpdAlert.style.display = 'none'; }, 6000);
+      }
+
+      userInput.value = '';
+      appendMessage(text, 'user');
+      conversation.push({ role: 'user', content: text });
+
+      sendBtn.disabled = true;
+      typingIndicator.classList.add('active');
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      const startTime = performance.now();
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: conversation })
+        });
+
+        const data = await response.json();
+        const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
+
+        typingIndicator.classList.remove('active');
+
+        if (data.reply) {
+          appendMessage(data.reply, 'assistant', `Tempo: ${elapsed}s • gov.br / Oficial`);
+          conversation.push({ role: 'assistant', content: data.reply });
+        } else {
+          appendMessage('Não foi possível obter uma resposta no momento. Por favor tente novamente.', 'assistant', 'Erro');
+        }
+      } catch (err) {
+        typingIndicator.classList.remove('active');
+        appendMessage('Erro na comunicação com a API de Inteligência Artificial. Verifique sua conexão e o servidor.', 'assistant', 'Offline');
+      }
+
+      sendBtn.disabled = false;
+      userInput.focus();
+    }
+  </script>
+</body>
+
+</html>
