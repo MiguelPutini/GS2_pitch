@@ -65,19 +65,3 @@ gs_video_pitch/
 ├── link_video_pitch.txt  # Arquivo para entrega no portal com o link do YouTube
 └── README.md             # Esta documentação
 ```
-
----
-
-## 🎥 Orientações para a Gravação do Vídeo Pitch
-
-Consulte o arquivo de roteiro completo:
-📄 `roteiro-video-pitch.md` (localizado nos artefatos do projeto)
-
-### Checklist Obrigatório da FIAP:
-1. **Duração:** Máximo de **3 minutos**.
-2. **Narração Humana Obrigatória:** Não use voz sintetizada por IA no vídeo.
-3. **Visibilidade no YouTube:** Configurado como **Não Listado**.
-4. **Comentários do YouTube:**
-   - Indicar se a entrega é **Individual**, **Dupla** ou **Trio**.
-   - Colocar os **Nomes completos** e **RMs** de todos os integrantes.
-5. **Entrega no Portal:** Apenas **1 integrante** envia o arquivo `link_video_pitch.txt`.
